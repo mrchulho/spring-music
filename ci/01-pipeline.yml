@@ -26,7 +26,7 @@ resources:
     key: workshop99/current-version
     access_key_id: ((s3-access-key-id))
     secret_access_key: ((s3-secret-access-key))
-    initial_version: 1.0.0
+    initial_version: 2.0.0
 
 - name: music-release
   type: s3
