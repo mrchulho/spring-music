@@ -3,15 +3,15 @@
         "etype": "SERVICE",
         "_comment_etype" : "Options are SERVICE, APPLICATION, HOST, PROCESS_GROUP_INSTANCE",
         "name": "SpringMusic",
-        "owner" : "workshop01",
+        "owner" : "mvilliger",
         "_comment" : "This defines our initial thoughts about monitoring!",
         "environments" : { 
             "Staging" : {
                 "tags" : [
                     {
                         "context": "CONTEXTLESS",
-                        "key": "DeploymentGroup", 
-                        "value": "SPRING-MUSIC-workshop01-Stage"
+                        "key": "DeploymentGroupName", 
+                        "value": "SPRING-MUSIC-mvilliger-Stage"
                     }                
                 ]
             },
@@ -19,8 +19,8 @@
                 "tags" : [
                     {
                         "context": "CONTEXTLESS",
-                        "key": "DeploymentGroup", 
-                        "value": "SPRING-MUSIC-workshop01-Production"
+                        "key": "DeploymentGroupName", 
+                        "value": "SPRING-MUSIC-mvilliger-Production"
                     }                
                 ]                
             },            
@@ -29,7 +29,7 @@
                     {
                         "context": "CONTEXTLESS",
                         "key": "DeploymentColor", 
-                        "value": "SPRING-MUSIC-workshop01-blue"
+                        "value": "SPRING-MUSIC-mvilliger-blue"
                     }                
                 ]                
             },
@@ -38,7 +38,7 @@
                     {
                         "context": "CONTEXTLESS",
                         "key": "DeploymentColor", 
-                        "value": "SPRING-MUSIC-workshop01-green"
+                        "value": "SPRING-MUSIC-mvilliger-green"
                     }                
                 ]                
             }            
