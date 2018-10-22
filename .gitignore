@@ -1,8 +1,6 @@
 # Settings
 *.settings
 
-credentials*.yml
-
 # Logs
 logs
 *.log
@@ -127,3 +125,4 @@ weave-ecs-demo-key.pem
 *.vagrant/
 # ignore concourse credentials
 credentials.yml
+
