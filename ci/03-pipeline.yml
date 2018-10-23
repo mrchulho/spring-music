@@ -8,19 +8,6 @@ groups:
   - push-to-prod
   - load-tests-prod
   - promote-new-version
-- name: init
-  jobs:
-  - init-dynatrace
-
-resource_types:
-- name: dynatrace-ufo-resource
-  type: docker-image
-  source:
-    repository: mvilliger/dynatrace-ufo-resource
-- name: dynatrace-resource
-  type: docker-image
-  source:
-    repository: mvilliger/dynatrace-resource
 
 resources:
 - name: music-repo
@@ -71,24 +58,8 @@ resources:
     skip_cert_check: true
     space: ((pcf-prod-space))
     current_app_name: ((pcf-prod-app-suffix))
-
-- name: dynatrace
-  type: dynatrace-resource
-  source:
-    apitoken: ((apitoken))
-    tenanthost: ((tenanthost))
     
 jobs:
-- name: init-dynatrace
-  public: true
-  plan:
-  - get: music-repo
-  - task: init-dynatrace-task
-    file: music-repo/ci/tasks/init-dynatrace-task.yml
-    params: 
-      apitoken: ((apitoken))
-      tenanthost: ((tenanthost))
-
 - name: unit
   plan:
   - get: music-repo
@@ -131,13 +102,7 @@ jobs:
     file: music-repo/ci/tasks/app-manifest-prep.yml
     params:
       PCF_APP_SUFFIX: ((pcf-stage-app-suffix))
-      WORKSHOPNUM: ((workshopnum))           
-  - put: dynatrace
-    params:
-      monspecserviceenvironment: SpringMusic/Staging
-      pipelinetaskname: ConcourseDeploy
-      VERSION_FILE: version/number
-      APP_REPO: music-repo
+      WORKSHOPNUM: ((workshopnum))
   - put: PCF-Stage
     params:
       manifest: app-manifest-output/manifest.yml
@@ -156,23 +121,17 @@ jobs:
     params:
       PCF_APP_SUFFIX: ((pcf-stage-app-suffix))
       PCF_APP_DOMAIN: ((pcf-stage-app-domain))
-  - task: push-dynatrace-monspec-data
-    file: music-repo/ci/tasks/push-dynatrace-monspec-data.yml
-    params: 
-      monspecserviceenvironment: SpringMusic/Staging
-      apitoken: ((apitoken))
-      tenanthost: ((tenanthost))
 
 - name: push-to-prod
   serial: true
   public: true
   plan:  
   - get: music-repo
-    trigger: true
+    trigger: false
     passed:
       - load-tests
   - get: version
-  - get: music-release
+  - get: music-release 
   - task: get-current-app-color
     file: music-repo/ci/tasks/current-app-get-info.yml
     params:
@@ -188,12 +147,6 @@ jobs:
       PCF_APP_SUFFIX: ((pcf-prod-app-suffix))
       WORKSHOPNUM: ((workshopnum))      
       PRODUCTION: true  
-  - put: dynatrace
-    params:
-      monspecserviceenvironment: SpringMusic/Production
-      pipelinetaskname: ConcourseDeploy
-      VERSION_FILE: version/number
-      APP_REPO: music-repo 
   - put: PCF-Prod
     params:
       manifest: app-manifest-output/manifest.yml
@@ -221,20 +174,14 @@ jobs:
     params:
       PCF_APP_SUFFIX: ((pcf-prod-app-suffix))
       PCF_APP_DOMAIN: ((pcf-prod-app-domain))
-      PRODUCTION: true
-  - task: push-dynatrace-monspec-data
-    file: music-repo/ci/tasks/push-dynatrace-monspec-data.yml
-    params: 
-      monspecserviceenvironment: SpringMusic/Production-$NEXT_APP_COLOR
-      apitoken: ((apitoken))
-      tenanthost: ((tenanthost))
+      PRODUCTION: true 
 
 - name: promote-new-version
   serial: true
   public: true
   plan:
   - get: music-repo
-    trigger: true
+    trigger: false
     passed:
       - load-tests-prod
   - task: get-current-app-color
